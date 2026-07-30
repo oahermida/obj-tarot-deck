@@ -73,16 +73,21 @@ class Card:
     An actual card only exists when some other code calls Card(...).
     """
 
-    def __init__(self, name, arcana, number, suit, orientation):
+    def __init__(self, name, arcana, number, suit, is_reversed=False):
         # __init__ is the initializer: Python calls it automatically every time
         # you write Card(...), passing along whatever arguments you gave.
         #
         # `self` is THIS PARTICULAR card — the one being built right now.
         # Python passes it in automatically; you never supply it yourself.
         #
-        # Five parameters because every card genuinely differs. (Contrast Deck,
-        # which takes none: every fresh deck is identical, so nothing needs
-        # telling from outside. Parameters are for what VARIES between instances.)
+        # Four required parameters because every card genuinely differs in all
+        # four respects. The fifth, is_reversed, has a default: a card is upright
+        # unless told otherwise, and shuffle() is what decides otherwise later.
+        #
+        # Contrast Deck, which takes exactly one parameter: the 78 cards are
+        # identical in every deck ever built, so the only thing worth telling a
+        # deck from outside is whether it reads with reversals. Parameters are
+        # for what VARIES between instances.
         #
         # Each `self.x = x` line creates an instance attribute — data owned by
         # this card alone. Two cards never share them.
@@ -90,7 +95,7 @@ class Card:
         self.arcana = arcana
         self.number = number
         self.suit = suit  # None for Majors — they have no suit
-        self.orientation = orientation
+        self.is_reversed = is_reversed
 
     def __str__(self):
         # Dunder ("double underscore") method: never called by name. Python calls
@@ -99,7 +104,7 @@ class Card:
         # The user-facing view — verbose and readable. Must RETURN a string;
         # a __str__ that calls print() and returns nothing crashes the moment
         # Python tries to use its result.
-        return f"Card: {self.name}, Arcana type: {self.arcana}, Number: {self.number}, Suit: {self.suit}, Orientation: {self.orientation}"
+        return f"Card: {self.name}, Arcana type: {self.arcana}, Number: {self.number}, Suit: {self.suit}, Is reversed?: {self.is_reversed}"
 
     def __eq__(self, other):
         # Runs whenever you write card_a == card_b.
@@ -138,15 +143,17 @@ class Card:
 # does `from card import ...`, which executes this whole file top to bottom.
 # Uncommented, these would print every time the deck is built. The permanent
 # fix for that is an `if __name__ == "__main__":` guard, as used in deck.py.
-# card0 = Card("The Fool", "Major Arcana", 0, None, "Upright")
-# copy_card0 = Card("The Fool", "Major Arcana", 0, None, "Upright")
-# rev_card0 = Card("The Fool", "Major Arcana", 0, None, "Reversed")
+# Orientation is a boolean now, so the 5th argument is False/True — and since it
+# defaults to False, the upright cards can simply leave it off entirely.
+# card0 = Card("The Fool", "Major Arcana", 0, None)
+# copy_card0 = Card("The Fool", "Major Arcana", 0, None)
+# rev_card0 = Card("The Fool", "Major Arcana", 0, None, True)
 # ncard = "not card"
 # print(card0.name)
 # print(card0.arcana)
 # print(card0.number)
 # print(card0.suit)
-# print(card0.orientation)
+# print(card0.is_reversed)
 # print(card0)
 # print(card0 == copy_card0)      # True  — same name, separate objects
 # print(rev_card0 == card0)       # True  — orientation excluded by design
